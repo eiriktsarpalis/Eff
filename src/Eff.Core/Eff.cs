@@ -7,9 +7,32 @@ using System.Threading.Tasks;
 
 namespace Eff.Core
 {
-    [AsyncMethodBuilder(typeof(EffMethodBuilder<>))]
-    public abstract class Eff<TResult>
+
+    public class Unit
     {
+        private Unit() { }
+        public static Unit Value { get; } = new Unit();
+    }
+
+    [AsyncMethodBuilder(typeof(EffMethodBuilder))]
+    public abstract class Eff
+    {
+        internal abstract Eff<Unit> Ignore();
+    }
+
+    [AsyncMethodBuilder(typeof(EffMethodBuilder<>))]
+    public abstract class Eff<TResult> : Eff
+    {
+        internal override Eff<Unit> Ignore()
+        {
+            switch((Eff)this)
+            {
+                case Eff<Unit> _eff : return _eff;
+                default: return Ignored();
+
+                async Eff<Unit> Ignored() { await this.AsEffect() ; return Unit.Value; }
+            }
+        }
     }
 
     public class Await<TResult> : Eff<TResult>

@@ -85,4 +85,77 @@ namespace Eff.Core
 
     }
 
+    public class EffMethodBuilder
+    {
+        private Eff<Unit> eff;
+        private object state;
+        private Func<object, Eff<Unit>> continuation;
+
+        public static EffMethodBuilder Create()
+        {
+            return new EffMethodBuilder();
+        }
+
+        public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : IAsyncStateMachine
+        {
+            this.state = stateMachine;
+            this.continuation = state =>
+            {
+                this.state = state;
+                ((IAsyncStateMachine)state).MoveNext();
+                return this.eff;
+            };
+            this.eff = new Delay<Unit>(continuation, state);
+        }
+
+        public void SetStateMachine(IAsyncStateMachine stateMachine)
+        {
+
+        }
+
+        public void SetResult()
+        {
+            this.eff = new SetResult<Unit>(Unit.Value, state);
+        }
+
+        public void SetException(Exception exception)
+        {
+            this.eff = new SetException<Unit>(exception, state);
+        }
+
+        public Eff Task => this.eff;
+
+        public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
+            where TAwaiter : IEffect
+            where TStateMachine : IAsyncStateMachine
+        {
+            AwaitOnCompleted(ref awaiter, ref stateMachine, true);
+        }
+
+
+        [SecuritySafeCritical]
+        public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
+            where TAwaiter : IEffect
+            where TStateMachine : IAsyncStateMachine
+        {
+            AwaitOnCompleted(ref awaiter, ref stateMachine, false);
+        }
+
+        private void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine, bool safe)
+            where TAwaiter : IEffect
+            where TStateMachine : IAsyncStateMachine
+        {
+
+            switch (awaiter)
+            {
+                case IEffect effect:
+                    effect.SetState(state);
+                    this.eff = new Await<Unit>(effect, continuation, state);
+
+                    break;
+                default:
+                    throw new EffException($"Awaiter {awaiter.GetType().Name} is not an effect. Try to use obj.AsEffect().");
+            }
+        }
+    }
 }

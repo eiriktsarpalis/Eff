@@ -35,6 +35,12 @@ namespace Eff.Core
             return new EffEffect<TResult>(eff, memberName, sourceFilePath, sourceLineNumber);
         }
 
-        
+        public static EffEffect<Unit> AsEffect(this Eff eff,
+                                    [CallerMemberName] string memberName = "",
+                                    [CallerFilePath] string sourceFilePath = "",
+                                    [CallerLineNumber] int sourceLineNumber = 0)
+        {
+            return eff.Ignore().AsEffect(memberName, sourceFilePath, sourceLineNumber);
+        }
     }
 }

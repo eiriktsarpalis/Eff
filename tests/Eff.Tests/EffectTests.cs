@@ -230,6 +230,24 @@ namespace Eff.Tests
         }
 
         [Fact]
+        public async Task TestUntypedEffBuilder()
+        {
+            int x = 0;
+
+            async Eff<int> Foo() => 41;
+            async Eff.Core.Eff Bar() => ++x;
+            async Eff.Core.Eff Baz()
+            {
+                x += await Foo().AsEffect();
+                await Bar().AsEffect();
+            }
+
+            await Baz().Run(new DefaultEffectHandler());
+
+            Assert.Equal(42, x);
+        }
+
+        [Fact]
         public void TestLocalVariablesLogging()
         {
             async Eff<int> Foo(int x)

@@ -15,6 +15,11 @@ namespace Eff.Core
     public static class EffExecutor
     {
 
+        public static Task Run(this Eff eff, IEffectHandler handler)
+        {
+            return eff.Ignore().Run(handler);
+        }
+
         public static async Task<TResult> Run<TResult>(this Eff<TResult> eff, IEffectHandler handler)
         {
             if (eff == null)
