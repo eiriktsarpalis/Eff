@@ -16,5 +16,10 @@ namespace Nessos.Effects.Handlers
         ///   Handles an eff state machine awaiter.
         /// </summary>
         Task Handle<TResult>(EffStateMachine<TResult> stateMachine);
+
+        /// <summary>
+        ///   Executes an eff instance and returns its result.
+        /// </summary>
+        Task<TResult> Execute<TResult>(Eff<TResult> eff);
     }
 }

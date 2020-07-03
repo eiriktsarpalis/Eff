@@ -99,14 +99,10 @@ namespace Nessos.Effects
         /// </summary>
         /// <param name="handler">Effect handler to be used in execution.</param>
         /// <returns></returns>
-        public new async Task<TResult> Run(IEffectHandler handler)
-        {
-            var stateMachine = GetStateMachine();
-            await handler.Handle(stateMachine).ConfigureAwait(false);
-            return stateMachine.GetResult();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public new Task<TResult> Run(IEffectHandler handler) => handler.Execute(this);
 
-        protected sealed override Task RunCore(IEffectHandler handler) => Run(handler);
+        protected sealed override Task RunCore(IEffectHandler handler) => handler.Execute(this);
         protected sealed override EffAwaiter GetAwaiterCore() => GetStateMachine();
     }
 }

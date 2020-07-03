@@ -46,5 +46,12 @@ namespace Nessos.Effects.Handlers
                 }
             }
         }
+
+        public virtual async Task<TResult> Execute<TResult>(Eff<TResult> eff)
+        {
+            var stateMachine = eff.GetStateMachine();
+            await Handle(stateMachine).ConfigureAwait(false);
+            return stateMachine.GetResult();
+        }
     }
 }

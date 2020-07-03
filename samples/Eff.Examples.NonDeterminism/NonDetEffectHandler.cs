@@ -92,6 +92,11 @@ namespace Nessos.Effects.Examples.NonDeterminism
                 }
             }
 
+            public Task<TValue> Execute<TValue>(Eff<TValue> eff)
+            {
+                throw new NotSupportedException();
+            }
+
             /// <summary>
             ///   Executes the state machine to completion, using non-deterministic semantics,
             ///   appending any results to the handler state.

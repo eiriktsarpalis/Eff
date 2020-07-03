@@ -79,6 +79,11 @@ namespace Nessos.Effects.Examples.Maybe
                 }
             }
 
+            public Task<TValue> Execute<TValue>(Eff<TValue> eff)
+            {
+                throw new NotSupportedException();
+            }
+
             /// <summary>
             ///   Executes the state machine to completion using maybe semantics,
             ///   appending any results to the handler state.
