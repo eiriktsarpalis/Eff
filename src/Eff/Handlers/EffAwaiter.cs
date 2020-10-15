@@ -135,12 +135,11 @@ namespace Nessos.Effects.Handlers
         /// <summary>
         ///   Sets a result value for the awaiter.
         /// </summary>
-        public Unit SetResult(TResult value)
+        public void SetResult(TResult value)
         {
             Exception = null;
             _result = value;
             HasResult = true;
-            return default;
         }
 
         /// <summary>

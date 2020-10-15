@@ -15,7 +15,7 @@ namespace Nessos.Effects
         /// <summary>
         ///   Gets the Unit instance.
         /// </summary>
-        public static Unit Value => new Unit();
+        public static Unit Value => default;
         /// Implements unit hashcode
         public override int GetHashCode() => 1;
         /// Implements unit equality
@@ -26,8 +26,5 @@ namespace Nessos.Effects
         public static bool operator ==(Unit x, Unit y) => true;
         /// Implements unit inequality
         public static bool operator !=(Unit x, Unit y) => false;
-
-        /// allow to shortcut effect
-        public static implicit operator ValueTask(Unit value) => default;
     }
 }
