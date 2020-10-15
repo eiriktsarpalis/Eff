@@ -52,7 +52,7 @@ namespace Nessos.Effects.Handlers
         /// <summary>
         ///   Returns true if the awaiter has been completed with an exception value.
         /// </summary>
-        public bool HasException => !(Exception is null);
+        public bool HasException => Exception is not null;
 
         /// <summary>
         ///   Returns true if the awaiter has been completed with either a result or an exception.
